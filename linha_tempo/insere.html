@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Gerador de Linha do Tempo Histórica</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-zinc-900 text-zinc-100 min-h-screen py-10 px-4 font-sans">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div
+                class="lg:col-span-2 bg-zinc-800 p-6 md:p-8 rounded-2xl border border-zinc-700 shadow-2xl h-fit"
+            >
+                <h1
+                    class="text-2xl font-bold mb-6 text-zinc-50 border-b border-zinc-700 pb-4"
+                >
+                    Nova Linha do Tempo
+                </h1>
+
+                <form id="timelineForm" class="space-y-6">
+                    <div>
+                        <label
+                            class="block text-sm font-medium text-zinc-400 mb-2"
+                            >Nome do Biografado / Título do Evento</label
+                        >
+                        <input
+                            type="text"
+                            id="titulo"
+                            required
+                            class="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2.5 text-zinc-100 focus:outline-none focus:border-blue-500"
+                        />
+                    </div>
+
+                    <div class="border-t border-zinc-700 pt-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-lg font-semibold text-zinc-300">
+                                Acontecimentos Cronológicos
+                            </h2>
+                            <button
+                                type="button"
+                                onclick="adicionarCampo()"
+                                class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-4 py-2 rounded-lg font-medium transition-colors"
+                            >
+                                + Adicionar Momento
+                            </button>
+                        </div>
+
+                        <div
+                            id="containerAcontecimentos"
+                            class="space-y-4"
+                        ></div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-lg"
+                    >
+                        ⚡ Gerar e Compilar Linha do Tempo
+                    </button>
+                </form>
+            </div>
+
+            <div class="space-y-6">
+                <div
+                    class="bg-zinc-800 p-6 rounded-2xl border border-zinc-700 shadow-2xl flex flex-col"
+                >
+                    <h2
+                        class="text-xl font-bold text-zinc-100 mb-4 border-b border-zinc-700 pb-2"
+                    >
+                        📂 Linhas do Tempo no Disco
+                    </h2>
+
+                    <div
+                        id="listaLinks"
+                        class="space-y-2 max-h-[350px] overflow-y-auto pr-2"
+                    >
+                        {{range .}}
+                        <a
+                            href="/linhas_html/{{.}}.html"
+                            target="_blank"
+                            class="flex items-center justify-between p-2.5 bg-zinc-900 hover:bg-zinc-750 rounded-lg border border-zinc-700 text-sm text-blue-400 hover:text-blue-300 transition-all font-medium group"
+                        >
+                            <span
+                                class="truncate text-zinc-300 group-hover:text-white capitalize"
+                                >📄 {{.}}</span
+                            >
+                            <span
+                                class="text-xs bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded border border-zinc-700"
+                                >Abrir ↗</span
+                            >
+                        </a>
+                        {{else}}
+                        <p class="text-sm text-zinc-500 italic">
+                            Nenhum histórico encontrado no sistema.
+                        </p>
+                        {{end}}
+                    </div>
+                </div>
+
+                <div class="bg-zinc-850 flex flex-col h-fit">
+                    <h2
+                        class="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-2"
+                    >
+                        Payload JSON Gerado
+                    </h2>
+                    <div
+                        class="bg-black rounded-2xl border border-zinc-800 p-4 font-mono text-xs overflow-x-auto max-h-[200px]"
+                    >
+                        <pre
+                            id="outputJson"
+                            class="text-emerald-400 whitespace-pre-wrap"
+                        >
+Aguardando envio...</pre
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let contadorEventos = 0;
+
+            function adicionarCampo() {
+                contadorEventos++;
+                const container = document.getElementById(
+                    "containerAcontecimentos",
+                );
+                const div = document.createElement("div");
+                div.className =
+                    "bg-zinc-900 p-4 rounded-xl border border-zinc-700 relative class-evento space-y-3";
+
+                // CORRIGIDO: Removido o "Event" duplicado do nome da variável
+                div.id = "evento_" + contadorEventos;
+
+                div.innerHTML = `
+                    <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
+                        <span class="text-xs font-mono text-zinc-500 font-bold uppercase">Momento #${contadorEventos}</span>
+                        <button type="button" onclick="removerCampo(${contadorEventos})" class="text-red-500 hover:text-red-400 text-xs font-semibold">Remover</button>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="col-span-2">
+                            <label class="block text-xs text-zinc-400 mb-1">Acontecimento</label>
+                            <input type="text" required class="campo-momento w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-1.5 text-sm text-zinc-100 focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Data</label>
+                            <input type="text" required class="campo-data w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-1.5 text-sm text-zinc-100 focus:outline-none focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1">Descrição</label>
+                        <textarea rows="2" required class="campo-descricao w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-1.5 text-sm text-zinc-100 focus:outline-none focus:border-blue-500"></textarea>
+                    </div>
+                `;
+                container.appendChild(div);
+            }
+
+            function removerCampo(id) {
+                const elemento = document.getElementById("evento_" + id);
+                if (elemento) elemento.remove();
+            }
+
+            // Ajustado aqui para mapear assincronamente abrindo o arquivo correto (.html)
+            function atualizarPainelLinks(arquivos) {
+                const listaContainer = document.getElementById("listaLinks");
+                if (!arquivos || arquivos.length === 0) {
+                    listaContainer.innerHTML = `<p class="text-sm text-zinc-500 italic">Nenhum histórico encontrado no sistema.</p>`;
+                    return;
+                }
+                listaContainer.innerHTML = arquivos
+                    .map(
+                        (file) => `
+                <a href="/linhas_html/${file}.html" target="_blank" class="flex items-center justify-between p-2.5 bg-zinc-900 hover:bg-zinc-750 rounded-lg border border-zinc-700 text-sm text-blue-400 hover:text-blue-300 transition-all font-medium group">
+                    <span class="truncate text-zinc-300 group-hover:text-white capitalize">📄 ${file}</span>
+                    <span class="text-xs bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded border border-zinc-700">Abrir ↗</span>
+                </a>
+            `,
+                    )
+                    .join("");
+            }
+
+            adicionarCampo();
+
+            document
+                .getElementById("timelineForm")
+                .addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const titulo = document.getElementById("titulo").value;
+                    const blocos = document.querySelectorAll(".class-evento");
+                    const acontecimentos = [];
+
+                    blocos.forEach((bloco, index) => {
+                        acontecimentos.push({
+                            acontecimento:
+                                bloco.querySelector(".campo-momento").value,
+                            ordem: index + 1,
+                            data: bloco.querySelector(".campo-data").value,
+                            descricao:
+                                bloco.querySelector(".campo-descricao").value,
+                        });
+                    });
+
+                    const dadosLinhaTempo = { titulo, acontecimentos };
+                    document.getElementById("outputJson").textContent =
+                        JSON.stringify(dadosLinhaTempo, null, 2);
+
+                    try {
+                        const resposta = await fetch("/api/gerar", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(dadosLinhaTempo),
+                        });
+
+                        if (!resposta.ok) {
+                            alert("Erro ao processar no servidor Go.");
+                            return;
+                        }
+
+                        const resultado = await resposta.json();
+                        atualizarPainelLinks(resultado.arquivos);
+                    } catch (erro) {
+                        console.error("Erro na comunicação:", erro);
+                        alert("Não foi possível conectar ao servidor.");
+                    }
+                });
+        </script>
+    </body>
+</html>
