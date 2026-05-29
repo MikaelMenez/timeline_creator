@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <title>{{Titulo}}</title>
+        <style>
+            body {
+                background-color: #f4ecd8;
+                color: #2c2416;
+                font-family: "Georgia", serif;
+                padding: 50px;
+                line-height: 1.6;
+            }
+            .container {
+                max-width: 800px;
+                margin: auto;
+                border: 5px double #5c4d33;
+                padding: 40px;
+                background: #fffaf0;
+            }
+            h1 {
+                text-align: center;
+                text-transform: uppercase;
+                border-bottom: 2px solid #5c4d33;
+                padding-bottom: 10px;
+            }
+            .evento {
+                display: flex;
+                margin-bottom: 40px;
+            }
+            .data {
+                width: 150px;
+                font-weight: bold;
+                font-style: italic;
+                color: #5c4d33;
+                border-right: 2px solid #5c4d33;
+                padding-right: 15px;
+                margin-right: 20px;
+            }
+            .conteudo {
+                flex: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>{{Titulo}}</h1>
+            <div style="margin-top: 40px">{{Acontecimentos}}</div>
+        </div>
+    </body>
+</html>
